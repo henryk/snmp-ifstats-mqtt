@@ -34,6 +34,7 @@ INTEGER_FIELD_SUFFIXES = (
 INTEGER_FIELDS = ("ifIndex", "ifMtu")
 
 IGNORE_FIELDS = ("ifSpecific", "ifIndex", "ifType")
+HIDE_IF_EMPTY = ("ifSpeed", "ifLastChange", "ifPhysAddress")
 
 
 def camel_to_snake(name):
@@ -106,6 +107,7 @@ class MQTTPublisher:
                     [
                         self.discovery_prefix,
                         "sensor",
+                        "snmp_ifstats",
                         ddata.unique_name + "-" + edata.name,
                     ]
                 )
@@ -199,6 +201,10 @@ class SNMPConnection:
                 for key, value in params.items():
                     if key in IGNORE_FIELDS:
                         continue
+
+                    if key in HIDE_IF_EMPTY and (value == 0 or value in ("0", "")):
+                        continue
+
                     uom = None
                     if key.endswith("Octets") or key.endswith("Mtu"):
                         uom = "bytes"
@@ -209,11 +215,14 @@ class SNMPConnection:
                     ):
                         uom = "dBm"
                     elif key.endswith("Pkts"):
-                        uom = "packets"
+                        uom = "p"
                     elif key.endswith("Discards") or key.endswith("Errors"):
                         uom = "count"
                     elif key.startswith("adsl") and key.endswith("Rate"):
-                        uom = "bits/s"
+                        uom = "b/s"
+                    elif key.endswith("Speed"):
+                        uom = "b/s"
+
                     data_items.append(DataItem(camel_to_snake(key), value, uom))
 
                 self.publisher.queue_device_data(
@@ -244,7 +253,7 @@ def main():
         for connection in connections:
             connection.poll()
         mqttp.publish()
-        time.sleep(1)
+        time.sleep(10)
 
 
 settings = Dynaconf(
