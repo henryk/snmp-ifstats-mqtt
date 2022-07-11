@@ -23,6 +23,7 @@ INTEGER_FIELD_SUFFIXES = (
     "Octets",
     "Atn",
     "SnrMgn",
+    "Pwr",
     "UnknownProtos",
 )
 INTEGER_FIELDS = ("ifIndex", "ifMtu")
@@ -111,12 +112,12 @@ class SNMPConnection:
                     uom = None
                     if key.endswith("Octets") or key.endswith("Mtu"):
                         uom = "bytes"
-                    elif (
-                        key.endswith("Atn")
-                        or key.endswith("SnrMgn")
-                        or key.endswith("Pwr")
-                    ):
+                    elif key.endswith("Atn") or key.endswith("SnrMgn"):
+                        uom = "dB"
+                        value /= 10.0
+                    elif key.endswith("Pwr"):
                         uom = "dBm"
+                        value /= 10.0
                     elif key.endswith("Pkts"):
                         uom = "p"
                     elif key.endswith("Discards") or key.endswith("Errors"):
