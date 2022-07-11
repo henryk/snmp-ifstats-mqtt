@@ -1,0 +1,5 @@
+community = "public"
+version = 2
+connections = { }
+exclude = []
+include = []
