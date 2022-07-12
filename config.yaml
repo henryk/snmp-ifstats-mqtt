@@ -24,7 +24,7 @@ options:
       exclude:
       include:
 schema:
-  log_level: list(DEBUG,INFO,WARNING,ERROR)
+  log_level: list("DEBUG","INFO","WARNING","ERROR")
   interval: int
   mqtt:
     discovery_prefix: "str?"
