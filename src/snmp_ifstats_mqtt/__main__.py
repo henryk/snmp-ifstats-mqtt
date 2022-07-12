@@ -10,7 +10,7 @@ from snmp_ifstats_mqtt.snmp import SNMPConnection
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL))
 
     connections = []
 
@@ -35,7 +35,7 @@ def main():
         for connection in connections:
             connection.poll()
         mqttp.publish()
-        time.sleep(10)
+        time.sleep(settings.INTERVAL)
 
 
 settings = Dynaconf(

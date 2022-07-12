@@ -3,3 +3,5 @@ version = 2
 connections = { }
 exclude = []
 include = []
+log_level = "INFO"
+interval = 10

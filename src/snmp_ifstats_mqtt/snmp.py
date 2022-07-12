@@ -1,3 +1,4 @@
+import logging
 import re
 from hashlib import sha256
 from itertools import chain
@@ -29,6 +30,7 @@ INTEGER_FIELD_SUFFIXES = (
 INTEGER_FIELDS = ("ifIndex", "ifMtu")
 IGNORE_FIELDS = ("ifSpecific", "ifIndex", "ifType")
 HIDE_IF_EMPTY = ("ifSpeed", "ifLastChange", "ifPhysAddress")
+logger = logging.getLogger(__name__)
 
 
 def camel_to_snake(name):
@@ -69,6 +71,7 @@ class SNMPConnection:
         for value in chain(
             self.session.walk(IF_MIB_ROOT), self.session.walk(ADSL_MIB_ROOT)
         ):
+            logger.debug("Walk, have: %s", value)
             inf = information.setdefault(value.oid_index, dict())
             inf[value.oid] = value
 

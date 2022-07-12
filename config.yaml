@@ -12,6 +12,8 @@ arch:
 discovery:
   - mqtt
 options:
+  log_level: INFO
+  interval: 10
   mqtt:
     discovery_prefix:
     broker:
@@ -22,6 +24,8 @@ options:
       exclude:
       include:
 schema:
+  log_level: list(DEBUG,INFO,WARNING,ERROR)
+  interval: int
   mqtt:
     discovery_prefix: "str?"
     broker: str
