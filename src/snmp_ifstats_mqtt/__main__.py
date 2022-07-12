@@ -13,6 +13,9 @@ from snmp_ifstats_mqtt.snmp import SNMPConnection
 def main():
     logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL))
 
+    os.environ["MIBS"] = "+ALL"
+    logging.info("ENV on start: %s", repr(dict(os.environ)))
+
     connections = []
 
     for connection in settings.connections:
@@ -54,6 +57,4 @@ settings = Dynaconf(
 )
 
 if __name__ == "__main__":
-    os.environ["MIBS"] = "+ALL"
-    logging.debug("ENV on start: %s", repr(dict(os.environ)))
     main()
