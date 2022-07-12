@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snmp_ifstats_mqtt"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Henryk Plötz <henryk@ploetzli.ch>"]
 
