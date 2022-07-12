@@ -1,0 +1,35 @@
+name: "SNMP ifstats (MQTT)"
+description: "Home-Assistant addon to bridge SNMP interface stats (IF-MIB and ADSL-LINE-MIB) into MQTT"
+version: "0.1.0"
+slug: "snmp_ifstats_mqtt"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+discovery:
+  - mqtt
+options:
+  mqtt:
+    discovery_prefix:
+    broker:
+    password:
+    username:
+  connections:
+    - host:
+      exclude:
+      include:
+schema:
+  mqtt:
+    discovery_prefix: "str?"
+    broker: str
+    username: "str?"
+    password: "str?"
+  connections:
+    - host: str
+      exclude:
+        - "str?"
+      include:
+        - "str?"
