@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 from hashlib import sha256
 from pathlib import Path
@@ -53,4 +54,6 @@ settings = Dynaconf(
 )
 
 if __name__ == "__main__":
+    os.environ["MIBS"] = "+ALL"
+    logging.debug("ENV on start: %s", repr(dict(os.environ)))
     main()
