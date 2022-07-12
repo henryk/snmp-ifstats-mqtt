@@ -25,4 +25,4 @@ ENV MIBS=+ALL
 COPY --from=builder /install /usr
 WORKDIR /data
 
-CMD [ "snmp_ifstats_mqtt" ]
+ENTRYPOINT "/usr/bin/snmp_ifstats_mqtt"
