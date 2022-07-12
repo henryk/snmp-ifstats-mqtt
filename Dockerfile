@@ -4,7 +4,6 @@ FROM $BUILD_FROM as common-base
 RUN apk add --no-cache \
     python3 net-snmp py3-pip
 COPY ADSL-LINE-MIB /usr/share/snmp/mibs/
-RUN mkdir /root/.snmp && echo mibs +ALL > /root/.snmp/snmp.conf
 RUN python3 -m pip install -U pip && pip install -U setuptools wheel
 
 FROM common-base as builder
@@ -22,6 +21,7 @@ COPY . .
 RUN pip install --no-warn-script-location --prefix=/install .
 
 FROM common-base as runner
+ENV MIBS=+ALL
 COPY --from=builder /install /usr
 WORKDIR /data
 
