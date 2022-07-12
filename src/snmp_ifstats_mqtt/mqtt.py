@@ -1,10 +1,13 @@
 import json
+import logging
 import uuid
 from typing import List, Optional
 
 from paho.mqtt.client import Client
 
 from .common import DeviceData
+
+logger = logging.getLogger(__name__)
 
 
 class MQTTPublisher:
@@ -82,6 +85,7 @@ class MQTTPublisher:
                         basename + "/config", json.dumps(discovery_data), retain=True
                     )
                     self.discovery_data[basename] = discovery_data
+                    logger.info("Discovered %s of device %s", edata, ddata.name)
 
                 # print(edata.name, edata.value)
                 self.mqtt_client.publish(basename + "/state", str(edata.value))

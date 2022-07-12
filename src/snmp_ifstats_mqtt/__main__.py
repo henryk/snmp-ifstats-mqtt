@@ -40,7 +40,12 @@ def main():
 
 settings = Dynaconf(
     envvar_prefix="SIM",
-    settings_files=["settings.toml", "settings.local.toml", ".secrets.toml", "/data/options.json"],
+    settings_files=[
+        "settings.toml",
+        "settings.local.toml",
+        ".secrets.toml",
+        "/data/options.json",
+    ],
     environments=False,
     load_dotenv=True,
     root_path=Path(__file__).parent,
