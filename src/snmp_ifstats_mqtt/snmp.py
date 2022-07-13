@@ -1,8 +1,10 @@
 import logging
 import re
+import time
+from dataclasses import dataclass
 from hashlib import sha256
 from itertools import chain
-from typing import Iterable, Union
+from typing import Dict, Iterable, Tuple, Union
 
 from easysnmp import Session
 
@@ -49,6 +51,12 @@ def cast_value(name: str, value: str) -> Union[str, int]:
     return value.rstrip("\x00")
 
 
+@dataclass
+class DataPoint:
+    time: float
+    data: int
+
+
 class SNMPConnection:
     def __init__(
         self,
@@ -64,10 +72,13 @@ class SNMPConnection:
         self.exclude = list(exclude)
         self.include = list(include)
         self.publisher = publisher
+        self.rate_cache: Dict[Tuple[str, str], DataPoint] = {}
 
     def poll(self):
         information = {}
+        new_rates = {}
 
+        now_ = time.time()
         for value in chain(
             self.session.walk(IF_MIB_ROOT), self.session.walk(ADSL_MIB_ROOT)
         ):
@@ -102,6 +113,8 @@ class SNMPConnection:
         }
 
         if self.publisher:
+            new_rates = {}
+
             for name, params in information_map.items():
                 data_items = []
 
@@ -132,6 +145,23 @@ class SNMPConnection:
 
                     data_items.append(DataItem(camel_to_snake(key), value, uom))
 
+                    if key.endswith("Octets"):
+                        lookup_key = name, key
+                        publish_key = key + "PS"
+                        if lookup_key in self.rate_cache:
+                            old_val = self.rate_cache[lookup_key]
+                            delta = value - old_val.data
+                            if delta >= 0 and old_val.time < now_:
+                                rate = delta / (now_ - old_val.time)
+                                data_items.append(
+                                    DataItem(camel_to_snake(publish_key), rate, "B/s")
+                                )
+                            else:
+                                data_items.append(
+                                    DataItem(camel_to_snake(publish_key), "", "B/s")
+                                )
+                        new_rates[lookup_key] = DataPoint(now_, value)
+
                 self.publisher.queue_device_data(
                     DeviceData(
                         name,
@@ -140,3 +170,5 @@ class SNMPConnection:
                         data_items,
                     )
                 )
+
+            self.rate_cache = new_rates
