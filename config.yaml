@@ -1,6 +1,6 @@
 name: "SNMP ifstats (MQTT)"
 description: "Home-Assistant addon to bridge SNMP interface stats (IF-MIB and ADSL-LINE-MIB) into MQTT"
-version: "0.1.10"
+version: "0.1.11"
 slug: "snmp_ifstats_mqtt"
 init: true
 arch:
