@@ -134,7 +134,7 @@ class SNMPConnection:
                     elif key.endswith("Pwr"):
                         uom = "dBm"
                         value /= 10.0
-                    elif key.endswith("Pkts"):
+                    elif key.endswith("Pkts") or key.endswith("UnknownProtos"):
                         uom = "p"
                     elif key.endswith("Discards") or key.endswith("Errors"):
                         uom = "count"
